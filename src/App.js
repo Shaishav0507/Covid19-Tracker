@@ -2,12 +2,22 @@ import { MenuItem, FormControl, Select, Card, CardContent } from '@material-ui/c
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Map from './Map';
+import Table from './Table';
 import InfoBox from './InfoBox';
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState('worldwide');
   const [countryInfo, setCountryInfo] = useState({});
+  const [tableData, setTableData] = useState([]);
+
+  useEffect(() => {
+    fetch("https://disease.sh/v3/covid-19/all")
+    .then(response => response.json())
+    .then(data => {
+      setCountryInfo(data);
+    })
+  },[])
 
   useEffect(() => {
     const getCountreisData = async () => {
@@ -19,7 +29,7 @@ function App() {
             name: country.country,
             value: country.countryInfo.iso2
           }));
-
+          setTableData(data);
           setCountries(countries);
       })
     };
@@ -39,6 +49,8 @@ function App() {
     })
   };
 
+  console.log("Country Info >>>", countryInfo);
+
   return (
       <div className="app">
         <div className="app__left">
@@ -57,9 +69,9 @@ function App() {
           </div>
 
           <div className="app__stats">
-            <InfoBox title="Coronovirus Cases" total={2000} />
-            <InfoBox title="Recovered" total={2000} />
-            <InfoBox title="Deaths" total={2000} />
+            <InfoBox title="Coronovirus Cases" cases={countryInfo.todayCases} total={countryInfo.cases} />
+            <InfoBox title="Recovered" cases={countryInfo.todayRecovered} total={countryInfo.recovered} />
+            <InfoBox title="Deaths" cases={countryInfo.todayDeaths} total={countryInfo.deaths} />
           </div>
           {/* title + select input dropdown */}
           <Map />
@@ -67,7 +79,8 @@ function App() {
         <Card className="app__right">
             <CardContent>
               <h3>Live Cases by Country</h3>
-              <h3>Worldwode new cases</h3>
+              <Table countries={tableData}></Table>
+              <h3>Worldwide new cases</h3>
             </CardContent>
         </Card>
       </div>   
