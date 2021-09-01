@@ -1,9 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Arvo:wght@700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=BioRhyme&display=swap");
 * {
   margin: 0;
+  font-family: "BioRhyme", serif;
 }
 
 body {
-  background-color: #f5f6fa;
+  background-color: #daebfc20;
 }
 
 .app {
@@ -12,13 +15,19 @@ body {
   padding: 20px;
 }
 
+.app__dropdown {
+  background-color: #f7f1ee;
+}
+.app__header > h1 {
+  color: #010c18 !important;
+  font-family: "Arvo", serif;
+}
 .app__header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  justify-content: space-between;
 }
-
 .app__left {
   flex: 0.9;
 }
@@ -27,9 +36,42 @@ body {
   display: flex;
   justify-content: space-between;
 }
+.app__right {
+  display: flex;
+  flex-direction: column;
+}
 
-@media (max-width:990px) {
+.app__right .MuiCardContent-root {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.app__graph {
+  flex-grow: 1;
+}
+
+.app__graphTitle {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 990px) {
   .app {
     flex-direction: column;
+  }
+  .app_header {
+    flex-direction: column;
+  }
+  .app__dropdown {
+    margin-top: 3px;
+  }
+  .app__rightTableTitle {
+    text-align: center;
+  }
+  .app__rightGraphTitle {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 5px;
   }
 }
