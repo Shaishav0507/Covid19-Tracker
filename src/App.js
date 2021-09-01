@@ -4,14 +4,18 @@ import './App.css';
 import Map from './Map';
 import Table from './Table';
 import InfoBox from './InfoBox';
-import { sortData } from './util';
+import { prettyPrintStat, sortData } from './util';
 import LineGraph from './LineGraph';
+import 'leaflet/dist/leaflet.css';
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState('worldwide');
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
+  const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
+  const [mapZoom, setMapZoom] = useState(3);
+  const [mapCountries, setMapCountries] = useState([]);
 
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
@@ -33,6 +37,7 @@ function App() {
           }));
           const sortedData = sortData(data);
           setTableData(sortedData);
+          setMapCountries(data);
           setCountries(countries);
       })
     };
@@ -49,6 +54,9 @@ function App() {
     .then(data => {
       setCountry(countryCode);
       setCountryInfo(data);
+
+      setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+      setMapZoom(4);
     })
   };
 
@@ -72,12 +80,16 @@ function App() {
           </div>
 
           <div className="app__stats">
-            <InfoBox title="Coronovirus Cases" cases={countryInfo.todayCases} total={countryInfo.cases} />
-            <InfoBox title="Recovered" cases={countryInfo.todayRecovered} total={countryInfo.recovered} />
-            <InfoBox title="Deaths" cases={countryInfo.todayDeaths} total={countryInfo.deaths} />
+            <InfoBox title="Coronovirus Cases" cases={prettyPrintStat(countryInfo.todayCases)} total={prettyPrintStat(countryInfo.cases)} />
+            <InfoBox title="Recovered" cases={prettyPrintStat(countryInfo.todayRecovered)} total={prettyPrintStat(countryInfo.recovered)} />
+            <InfoBox title="Deaths" cases={prettyPrintStat(countryInfo.todayDeaths)} total={prettyPrintStat(countryInfo.deaths)} />
           </div>
           {/* title + select input dropdown */}
-          <Map />
+          <Map 
+            countries={mapCountries}
+            center={mapCenter}
+            zoom={mapZoom}
+          />
         </div>
         <Card className="app__right">
             <CardContent>
